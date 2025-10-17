@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package courseservice;
+
 message GetCourseRequest {
   string course_id = 1;
 }
