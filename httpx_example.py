@@ -3,6 +3,7 @@ import httpx
 import json
 import time
 from functools import wraps
+import asyncio
 
 client_jsonplaceholder = httpx.Client()
 client_httpbin = httpx.Client()
@@ -19,6 +20,7 @@ def log_response(func):
             print(f"➡️ Method: {response.request.method}")
             print(f"➡️ Status: {response.status_code}")
             print(f"➡️ Request headers: {response.request.headers}")
+            print(f"➡️ Response headers: {response.headers}")
 
             # безопасная проверка тела запроса
             try:
@@ -87,6 +89,17 @@ def retry(max_retries=3, delay=1):
         return wrapper
     return decorator
 
+def to_async(sync_decorator):
+    """Навешиваем sync-декоратор на async функцию"""
+    def wrapper_async(func):
+        @wraps(func)
+        async def inner(*args, **kwargs):
+            response = await func(*args, **kwargs)  # просто await, без asyncio.run
+            # применяем синхронный декоратор к уже полученному response
+            sync_decorator(lambda *_: response)()  # вызываем wrapper sync-декоратора
+            return response
+        return inner
+    return wrapper_async
 
 #response = httpx.get("https://jsonplaceholder.typicode.com/todos/1")
 #
@@ -226,6 +239,21 @@ for i in range(1,3):
     get_jsonplaceholder_todos_id(i)
 
 
+client_async_jsonplaceholder = httpx.AsyncClient()
+@to_async(log_response)
+async def get_async_jsonplaceholder_todo_id(todo_id):
+    return await client_async_jsonplaceholder.get(
+        f"https://jsonplaceholder.typicode.com/todos/{todo_id}"
+    )
+async def run_async_requests():
+        for i in range(1, 3):
+            await get_async_jsonplaceholder_todo_id(i)
+        for i in range(3, 5):
+            await get_async_jsonplaceholder_todo_id(i)
+        await client_async_jsonplaceholder.aclose()
+asyncio.run(run_async_requests())
+
+
 
 client_httpbin_headers = httpx.Client(headers={"Authorization": "Bearer test_token"})
 @log_response
@@ -257,15 +285,17 @@ def get_httpbin_timeout():
 get_httpbin_timeout()
 
 
-@retry(max_retries=3, delay=1)
-@log_response
-def get_httpbin_timeout():
-    return client_httpbin.get("https://httpbin.org/delay/2")
-get_httpbin_timeout()
+#@retry(max_retries=3, delay=1)
+#@log_response
+#def get_httpbin_timeout():
+#    return client_httpbin.get("https://httpbin.org/delay/2")
+#get_httpbin_timeout()
 
+@log_response
+def options_httpbin():
+    return client_httpbin.options("https://httpbin.org/")
+options_httpbin()
 
 client_jsonplaceholder.close()
 client_httpbin.close()
 client_httpbin_headers.close()
-
-#client.close()
