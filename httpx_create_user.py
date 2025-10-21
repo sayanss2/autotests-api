@@ -20,3 +20,5 @@ req_body = {
 user_create_response = client.post(user_create_endpoint, json = req_body)
 
 log_response(user_create_response, "User create")
+
+client.close()

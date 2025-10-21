@@ -41,3 +41,5 @@ headers_credentials = {
 get_user_response = client.get(get_user_endpoint, headers = headers_credentials)
 get_user_data = get_user_response.json()
 log_response(get_user_response, "Get user") 
+
+client.close()
