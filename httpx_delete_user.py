@@ -40,3 +40,5 @@ headers_credentials = {
 user_delete_endpoint = SERVER + "/api/v1/users/" + str(user_id)
 user_delete_response = client.delete(user_delete_endpoint, headers = headers_credentials)
 log_response(user_delete_response, "User delete")
+
+client.close()
