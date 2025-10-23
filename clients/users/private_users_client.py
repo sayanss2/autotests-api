@@ -5,9 +5,15 @@ from httpx import Response
 from clients.api_client import APIClient
 
 
-class UpdateUserRequestDict(TypedDict):
+class UpdateUserRequestDict(TypedDict, total=False):
     """
     Описание структуры запроса на обновление пользователя.
+
+    Поля:
+    - email (str | None): Электронная почта пользователя.
+    - lastName (str | None): Фамилия пользователя.
+    - firstName (str | None): Имя пользователя.
+    - middleName (str | None): Отчество пользователя.
     """
     email: str | None
     lastName: str | None
