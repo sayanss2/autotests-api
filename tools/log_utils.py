@@ -1,18 +1,32 @@
 # log_utils.py
 import json
+from typing import Any
 
-def log_response(response, label="Response") -> None:
-    """Выводит на печать ответ с метками"""
+def log_response(response: Any, label: str = "Response") -> None:
+    """
+    Выводит на печать ответ с метками.
+    Принимает либо объект httpx.Response, либо уже распарсенный словарь.
+    """
+    # Если пришёл словарь, просто печатаем его
+    if isinstance(response, dict):
+        print(f"{label} (dict):")
+        print(json.dumps(response, indent=2))
+        print("=" * 80)
+        return
+
+    # Если пришёл объект Response
     print(f"URL: {response.url}")
     print(f"Status code: {response.status_code}")
     print(f"Method: {response.request.method}")
+
     try:
         data = response.json()
-    # Если тело ответа пустое или равно null, выводим более понятное сообщение
-        if data is None or data == {} or data == []:
-            print(f"{label}: <нет данных>")
-        else:
-            print(f"{label}:", json.dumps(data, indent=2))
     except Exception:
-        print(f"{label}: <не JSON>")
-    print("="*80)
+        data = None
+
+    if data is None or data == {} or data == []:
+        print(f"{label}: <нет данных>")
+    else:
+        print(f"{label}:", json.dumps(data, indent=2))
+
+    print("=" * 80)
