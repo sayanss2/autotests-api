@@ -61,3 +61,7 @@ create_course_request = CreateCourseRequestDict(
 create_course_response = courses_client.create_course(create_course_request)
 #print('Create course data:', create_course_response)
 log_response(create_course_response, label="Create course data:")
+log_response(
+    courses_client.get_courses_api({"userId": create_user_response['user']['id']}),
+    label="Get courses by user id:"
+)
