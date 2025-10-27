@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, HttpUrl, IPvAnyAddress, FilePath
+
 
 
 class Address(BaseModel):
@@ -29,3 +30,19 @@ user2 = User(
 )
 print(user2.id)  # 123 (автоматически преобразован в int)
 print(user2.model_dump_json())  # Выводит JSON-строку
+
+
+class ConfigSchema(BaseModel):
+    email: EmailStr
+    site: HttpUrl
+    ip: IPvAnyAddress
+    file: FilePath
+
+# Пример успешной валидации
+cfg = ConfigSchema(
+    email="admin@example.com",
+    site="https://example.com",
+    ip="192.168.0.1",
+    file="C:/Windows/explorer.exe"
+)
+print(cfg)
