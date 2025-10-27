@@ -21,9 +21,9 @@ class UserBaseSchema(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
     email: EmailStr = Field(default="user@example.com")
-    first_name: str = Field(alias="firstName", default="first_name")
-    last_name: str = Field(alias="lastName", default="last_name")
-    middle_name: str = Field(alias="middleName", default="middle_name")
+    first_name: str = Field(alias="firstName", default="First")
+    last_name: str = Field(alias="lastName", default="Last")
+    middle_name: str = Field(alias="middleName", default="Middle")
 
 
 class UserSchema(UserBaseSchema):
@@ -39,13 +39,13 @@ class CreateUserRequestSchema(UserBaseSchema):
     """
     model_config = UserBaseSchema.model_config
 
-    password: str = Field(default="secret123", min_length=8)
+    password: str = Field(min_length=8)
 
 
 class CreateUserResponseSchema(BaseModel):
     """
     Схема ответа с данными созданного пользователя.
     """
-    model_config = UserBaseSchema.model_config
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
-    user: UserSchema = Field(default_factory=UserSchema)
+    user: UserSchema
