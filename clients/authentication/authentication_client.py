@@ -48,7 +48,6 @@ class AuthenticationClient(APIClient):
         :return: Ответ от сервера в виде объекта LoginResponseSchema
         """
         response = self.login_api(request)
-        #return response.json()  # Извлекаем JSON из ответа
         return LoginResponseSchema.model_validate_json(response.text)
 
 

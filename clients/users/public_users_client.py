@@ -1,47 +1,11 @@
-from typing import TypedDict
-
 from httpx import Response
 
 from clients.api_client import APIClient
 from clients.public_http_builder import get_public_http_client
-
-
-# Добавили описание структуры пользователя
-class User(TypedDict):
-    """
-    Описание структуры пользователя.
-    """
-    id: str
-    email: str
-    lastName: str
-    firstName: str
-    middleName: str
-
-
-# Добавили описание структуры ответа создания пользователя
-class CreateUserResponseDict(TypedDict):
-    """
-    Описание структуры ответа создания пользователя.
-    """
-    user: User
-
-
-class CreateUserRequestDict(TypedDict):
-    """
-    Структура запроса на создание пользователя.
-
-    Поля:
-        email (str): Адрес электронной почты.
-        password (str): Пароль.
-        lastName (str): Фамилия пользователя.
-        firstName (str): Имя пользователя.
-        middleName (str): Отчество пользователя.
-    """
-    email: str
-    password: str
-    lastName: str
-    firstName: str
-    middleName: str
+from clients.users.users_schema import (
+    CreateUserRequestSchema, 
+    CreateUserResponseSchema
+)
 
 
 class PublicUsersClient(APIClient):
@@ -50,7 +14,7 @@ class PublicUsersClient(APIClient):
 
     Публичные методы не требуют авторизации, например, создание пользователя.
     """
-    def create_user_api(self, request: CreateUserRequestDict) -> Response:
+    def create_user_api(self, request: CreateUserRequestSchema) -> Response:
         """
         Создаёт нового пользователя.
 
@@ -60,12 +24,16 @@ class PublicUsersClient(APIClient):
                         lastName, firstName, middleName.
         :return: httpx.Response, содержащий ответ сервера.
         """
-        return self.post("/api/v1/users", json=request)
+        return self.post("/api/v1/users", json=request.model_dump(by_alias=True))
     
     # Добавили новый метод
-    def create_user(self, request: CreateUserRequestDict) -> CreateUserResponseDict:
+    def create_user(self, request: CreateUserRequestSchema) -> CreateUserResponseSchema:
+        """
+        Создаёт нового пользователя и возвращает его данные из ответа
+        """
         response = self.create_user_api(request)
-        return response.json()
+        #return response.json()
+        return CreateUserResponseSchema.model_validate_json(response.text)
 
 
 # Добавляем builder для PublicUsersClient

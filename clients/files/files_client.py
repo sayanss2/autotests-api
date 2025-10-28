@@ -1,5 +1,3 @@
-from typing import TypedDict
-
 from httpx import Response
 
 from clients.api_client import APIClient
@@ -7,42 +5,10 @@ from clients.private_http_builder import (
     AuthenticationUserSchema, 
     get_private_http_client
 )
-
-# Добавили описание структуры файла
-class File(TypedDict):
-    """
-    Описание структуры файла.
-    """
-    id: str
-    url: str
-    filename: str
-    directory: str
-
-
-# Добавили описание структуры запроса на создание файла
-class CreateFileResponseDict(TypedDict):
-    """
-    Описание структуры ответа создания файла.
-    """
-    file: File
-
-
-class CreateFileRequestDict(TypedDict):
-    """
-    Структура запроса на создание файла.
-
-    Поля:
-        filename (str): Имя файла, которое будет сохранено на сервере.
-        directory (str): Путь к каталогу, в котором будет размещён файл.
-        upload_file (str): Путь к локальному файлу, который нужно отправить.
-                          Путь должен указывать на существующий файл,
-                          который будет открыт в режиме чтения в бинарном
-                          формате и передан в multipart‑форму.
-    """
-    filename: str
-    directory: str
-    upload_file: str
-
+from clients.files.files_schema import (
+    CreateFileRequestSchema,
+    CreateFileResponseSchema
+)
 
 class FilesClient(APIClient):
     """
@@ -57,21 +23,18 @@ class FilesClient(APIClient):
         """
         return self.get(f"/api/v1/files/{file_id}")
     
-    def create_file_api(self, request: CreateFileRequestDict) -> Response:
+    def create_file_api(self, request: CreateFileRequestSchema) -> Response:
         """
         Метод создания файла.
 
         :param request: Словарь с filename, directory, upload_file.
         :return: Ответ от сервера в виде объекта httpx.Response
         """
-        data = {
-            "filename": request["filename"],
-            "directory": request["directory"],
-        }
-        with open(request["upload_file"], "rb") as f:
+
+        with open(request.upload_file, "rb") as f:
             return self.post(
                 "/api/v1/files",
-                data=data,
+                data=request.model_dump(by_alias=True, exclude={'upload_file'}),
                 files={"upload_file": f}
             )
         
@@ -85,9 +48,10 @@ class FilesClient(APIClient):
         return self.delete(f"/api/v1/files/{file_id}")
     
     # Добавили новый метод
-    def create_file(self, request: CreateFileRequestDict) -> CreateFileResponseDict:
+    def create_file(self, request: CreateFileRequestSchema) -> CreateFileResponseSchema:
         response = self.create_file_api(request)
-        return response.json()
+        print("\n\n\n", response.json(), "\n\n\n")
+        return CreateFileResponseSchema.model_validate_json(response.text)
     
 
 def get_files_client(user: AuthenticationUserSchema) -> FilesClient:

@@ -1,9 +1,9 @@
 # test_public_users_client.py
 from httpx import Client
-from clients.users.public_users_client import PublicUsersClient, CreateUserRequestDict
+from clients.users.public_users_client import PublicUsersClient, CreateUserRequestSchema
 from clients.authentication.authentication_client import AuthenticationClient, LoginRequestSchema
-from clients.users.private_users_client import PrivateUsersClient, UpdateUserRequestDict
-from clients.files.files_client import FilesClient, CreateFileRequestDict
+from clients.users.private_users_client import PrivateUsersClient, UpdateUserRequestSchema
+from clients.files.files_client import FilesClient, CreateFileRequestSchema
 from clients.courses.courses_client import (
     CoursesClient,
     GetCoursesQueryDict,
@@ -33,12 +33,12 @@ public_client = PublicUsersClient(http_client)
 #    "middleName": "Ivanovich"
 #}
 
-payload_user_create = CreateUserRequestDict(
+payload_user_create = CreateUserRequestSchema(
     email=get_random_email(),
     password="string",
-    lastName="Ivanov",
-    firstName="Ivan",
-    middleName="Ivanovich"
+    last_name="Ivanov",
+    first_name="Ivan",
+    middle_name="Ivanovich"
 )
 
 create_user_response = public_client.create_user_api(payload_user_create)
@@ -48,8 +48,8 @@ log_response(create_user_response, "Create user")
 auth_client = AuthenticationClient(http_client)
 
 payload_user_login = LoginRequestSchema(
-    email=payload_user_create["email"],
-    password=payload_user_create["password"]
+    email=payload_user_create.email,
+    password=payload_user_create.password
 )
 user_login_response = auth_client.login_api(payload_user_login)
 user_login_data = user_login_response.json()
@@ -68,12 +68,14 @@ log_response(user_me_response, "Get user me")
 user_get_response = private_client.get_user_api(user_me_data["user"]["id"])
 log_response(user_get_response, "Get user_id data")
 
-payload_user_update = UpdateUserRequestDict(
+payload_user_update = UpdateUserRequestSchema(
     email=get_random_email(),
-    firstName="Alex",
-    middleName="Smith"
+    first_name="Alex",
+    middle_name="Smith"
 )
+print("\n\n\n", payload_user_update, "\n\n\n")
 user_update_response = private_client.update_user_api(user_me_data["user"]["id"], payload_user_update)
+print(user_update_response.request._content, "\n\n\n")
 log_response(user_update_response, "Update user_id data")
 
 
@@ -83,7 +85,7 @@ log_response(user_get_response, "Get user_id data")
 #4.1 Приватный клиент – запрос к /files
 file_client = FilesClient(http_client)
 
-file_payload = CreateFileRequestDict(
+file_payload = CreateFileRequestSchema(
     filename=get_random_filename(),
     directory="test123",
     upload_file="./testdata/files/testfile.png"

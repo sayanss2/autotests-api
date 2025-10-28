@@ -3,12 +3,12 @@ from typing import TypedDict
 from httpx import Response
 
 from clients.api_client import APIClient
-from clients.files.files_client import File
 from clients.private_http_builder import (
     AuthenticationUserSchema, 
     get_private_http_client
 )
-from clients.users.private_users_client import User
+from clients.users.users_schema import UserSchema as User
+from clients.files.files_schema import FileSchema as File
 
 
 # Добавили описание структуры курса
