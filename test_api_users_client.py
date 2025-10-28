@@ -1,7 +1,7 @@
 # test_public_users_client.py
 from httpx import Client
 from clients.users.public_users_client import PublicUsersClient, CreateUserRequestDict
-from clients.authentication.authentication_client import AuthenticationClient, LoginRequestDict
+from clients.authentication.authentication_client import AuthenticationClient, LoginRequestSchema
 from clients.users.private_users_client import PrivateUsersClient, UpdateUserRequestDict
 from clients.files.files_client import FilesClient, CreateFileRequestDict
 from clients.courses.courses_client import (
@@ -47,7 +47,7 @@ log_response(create_user_response, "Create user")
 # 2. Аутентификационный клиент – логин
 auth_client = AuthenticationClient(http_client)
 
-payload_user_login = LoginRequestDict(
+payload_user_login = LoginRequestSchema(
     email=payload_user_create["email"],
     password=payload_user_create["password"]
 )
