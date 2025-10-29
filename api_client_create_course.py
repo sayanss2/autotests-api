@@ -1,20 +1,16 @@
 from clients.private_http_builder import AuthenticationUserSchema
-from clients.users.public_users_client import (
-    CreateUserRequestSchema, 
-    get_public_users_client
-)
-from clients.files.files_client import (
-    CreateFileRequestSchema, 
-    get_files_client
-)
-from clients.courses.courses_client import (
-    CreateCourseRequestDict,
-    get_courses_client
+from clients.users.public_users_client import get_public_users_client
+from clients.users.users_schema import CreateUserRequestSchema
+from clients.files.files_client import get_files_client
+from clients.files.files_schema import CreateFileRequestSchema
+from clients.courses.courses_client import get_courses_client
+from clients.courses.courses_schema import (
+    UpdateCourseRequestSchema,
+    CreateCourseRequestSchema,
+    GetCoursesQuerySchema
 )
 
 from tools.fakers import get_random_email
-from tools.fakers_usr import get_random_filename
-from tools.log_utils import log_response
 
 # Инициализируем клиенты
 public_users_client = get_public_users_client()
@@ -28,7 +24,7 @@ create_user_request = CreateUserRequestSchema(
     middle_name="string"
 )
 create_user_response = public_users_client.create_user(create_user_request)
-log_response(create_user_response.model_dump_json(), label="Create User")
+print('Create user data:', create_user_response)
 
 # Инициализируем клиенты
 authentication_user = AuthenticationUserSchema(
@@ -40,28 +36,43 @@ courses_client = get_courses_client(authentication_user)
 
 # Загружаем файл
 create_file_request = CreateFileRequestSchema(
-    filename=get_random_filename(),
+    filename=f"test_{get_random_email()}_image.png",
     directory="courses",
     upload_file="./testdata/files/image.png"
 )
 create_file_response = files_client.create_file(create_file_request)
-#print('Create file data:', create_file_response)
-log_response(create_file_response, label="Create file data:")
+print('Create file data:', create_file_response)
 
 # Создаем курс
-create_course_request = CreateCourseRequestDict(
+create_course_request = CreateCourseRequestSchema(
     title="Python",
-    maxScore=100,
-    minScore=10,
+    max_score=100,
+    min_score=10,
     description="Python API course",
-    estimatedTime="2 weeks",
-    previewFileId=create_file_response.file.id,
-    createdByUserId=create_user_response.user.id
+    estimated_time="2 weeks",
+    preview_file_id=create_file_response.file.id,
+    created_by_user_id=create_user_response.user.id
 )
 create_course_response = courses_client.create_course(create_course_request)
-#print('Create course data:', create_course_response)
-log_response(create_course_response, label="Create course data:")
-log_response(
-    courses_client.get_courses_api({"userId": create_user_response.user.id}),
-    label="Get courses by user id:"
+print('Create course data:', create_course_response)
+
+#Обновляем курс
+update_course_request = UpdateCourseRequestSchema(
+    title="test1234",
+    description="test1234",
+    estimated_time="30min"
 )
+update_course_response = courses_client.update_course(
+    create_course_response.course.id, 
+    update_course_request
+)
+print('Update course data:', update_course_response)
+
+# Получаем курсы
+get_courses_response = courses_client.get_courses(
+    GetCoursesQuerySchema(user_id=create_user_response.user.id)
+)
+print('Get course data by user id:', get_courses_response)
+
+get_course_response = courses_client.get_course(create_course_response.course.id)
+print('Get course data by id:', get_course_response)
