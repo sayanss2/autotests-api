@@ -1,20 +1,30 @@
 # test_public_users_client.py
 from httpx import Client
-from clients.users.public_users_client import PublicUsersClient, CreateUserRequestSchema
-from clients.authentication.authentication_client import AuthenticationClient, LoginRequestSchema
-from clients.users.private_users_client import PrivateUsersClient, UpdateUserRequestSchema
-from clients.files.files_client import FilesClient, CreateFileRequestSchema
+from clients.users.public_users_client import PublicUsersClient
+from clients.users.users_schema import (
+    CreateUserRequestSchema, 
+    UpdateUserRequestSchema
+)
+from clients.authentication.authentication_client import AuthenticationClient
+from clients.authentication.authentication_schema import LoginRequestSchema
+from clients.users.private_users_client import PrivateUsersClient
+from clients.files.files_client import FilesClient
+from clients.files.files_schema import CreateFileRequestSchema
 from clients.courses.courses_client import (
-    CoursesClient,
-    GetCoursesQueryDict,
-    CreateCourseRequestDict,
-    UpdateCourseRequestDict
+    CoursesClient
+)
+from clients.courses.courses_schema import (
+    GetCoursesQuerySchema,
+    CreateCourseRequestSchema,
+    UpdateCourseRequestSchema
 )
 from clients.exercises.exercises_client import (
-    ExercisesClient,
-    GetExercisesQueryDict,
-    CreateExerciseRequestDict,
-    UpdateExerciseRequestDict
+    ExercisesClient
+)
+from clients.exercises.exercises_schema import (
+    GetExercisesQuerySchema,
+    CreateExerciseRequestSchema,
+    UpdateExerciseRequestSchema
 )
 
 from tools import log_response, get_random_email, get_random_filename
@@ -102,29 +112,32 @@ log_response(file_get_response, "Get file")
 course_client = CoursesClient(http_client)
 
 
-course_payload = CreateCourseRequestDict(
+course_payload = CreateCourseRequestSchema(
     title="test123",
-    maxScore=5,
-    minScore=1,
+    max_score=5,
+    min_score=1,
     description="test123",
-    estimatedTime="10min",
-    previewFileId=file_create_data["file"]["id"],
-    createdByUserId=user_me_data["user"]["id"]
+    estimated_time="10min",
+    preview_file_id=file_create_data["file"]["id"],
+    created_by_user_id=user_me_data["user"]["id"]
 )
 courses_create_response = course_client.create_course_api(course_payload)
 courses_create_data = courses_create_response.json()
 log_response(courses_create_response,  "Create course")
 
-course_update_payload = UpdateCourseRequestDict(
+course_update_payload = UpdateCourseRequestSchema(
     title="test1234",
     description="test1234",
-    estimatedTime="30min"
+    estimated_time="30min"
 )
-course_update_response = course_client.update_course_api(courses_create_data["course"]["id"], course_update_payload)
+course_update_response = course_client.update_course_api(
+    courses_create_data["course"]["id"], 
+    course_update_payload
+)
 log_response(course_update_response,  "Update course")
 
-course_client_params = GetCoursesQueryDict(
-    userId=user_me_data["user"]["id"]
+course_client_params = GetCoursesQuerySchema(
+    user_id=user_me_data["user"]["id"]
 )
 courses_get_response = course_client.get_courses_api(course_client_params)
 courses_get_data = courses_get_response.json()
@@ -134,14 +147,14 @@ log_response(courses_get_response, "Get courses")
 exercises_client = ExercisesClient(http_client)
 
 #5.1 Создание задания
-create_exercise_payload = CreateExerciseRequestDict(
-    title="Tesr exercise 1",
-    courseId=courses_get_data["courses"][0]["id"],
-    maxScore=10,
-    minScore=0,
-    orderIndex=1,
+create_exercise_payload = CreateExerciseRequestSchema(
+    title="Test exercise 1",
+    course_id=courses_get_data["courses"][0]["id"],
+    max_score=10,
+    min_score=0,
+    order_index=1,
     description="description 1",
-    estimatedTime="15min",
+    estimated_time="15min",
 )
 
 exercises_create_response = exercises_client.create_exercise_api(create_exercise_payload)
@@ -149,10 +162,9 @@ exercises_create_data = exercises_create_response.json()
 log_response(exercises_create_response,  "Create exercise")
 
 #5.2 Получение списка заданий для курса
-exercises_get_query = GetExercisesQueryDict(
-    courseId=create_exercise_payload["courseId"]
+exercises_get_query = GetExercisesQuerySchema(
+    course_id=create_exercise_payload.course_id
 )
-
 exercises_get_response = exercises_client.get_exercises_api(exercises_get_query)
 exercises_get_data = exercises_get_response.json()
 log_response(exercises_get_response, "Get exercises")
@@ -163,8 +175,8 @@ exercise_get_data = exercise_get_response.json()
 log_response(exercise_get_response, "Get exercise")
 
 #5.4 Обновление задания
-update_exercise_payload = UpdateExerciseRequestDict(
-    title= "Tesr exercise 123",
+update_exercise_payload = UpdateExerciseRequestSchema(
+    title= "Test exercise 123",
     description= "description 123456"
 )
 

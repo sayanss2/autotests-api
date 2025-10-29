@@ -50,7 +50,6 @@ class FilesClient(APIClient):
     # Добавили новый метод
     def create_file(self, request: CreateFileRequestSchema) -> CreateFileResponseSchema:
         response = self.create_file_api(request)
-        print("\n\n\n", response.json(), "\n\n\n")
         return CreateFileResponseSchema.model_validate_json(response.text)
     
 
