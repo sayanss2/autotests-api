@@ -16,13 +16,7 @@ from tools.fakers import fake
 public_users_client = get_public_users_client()
 
 # Создаем пользователя
-create_user_request = CreateUserRequestSchema(
-    email=fake.email(),
-    password="string",
-    last_name="string",
-    first_name="string",
-    middle_name="string"
-)
+create_user_request = CreateUserRequestSchema() # Создаем запрос на создание пользователя
 create_user_response = public_users_client.create_user(create_user_request)
 print('Create user data:', create_user_response)
 
@@ -36,8 +30,6 @@ courses_client = get_courses_client(authentication_user)
 
 # Загружаем файл
 create_file_request = CreateFileRequestSchema(
-    filename=f"test_{fake.email()}_image.png",
-    directory="courses",
     upload_file="./testdata/files/image.png"
 )
 create_file_response = files_client.create_file(create_file_request)
@@ -45,11 +37,6 @@ print('Create file data:', create_file_response)
 
 # Создаем курс
 create_course_request = CreateCourseRequestSchema(
-    title="Python",
-    max_score=100,
-    min_score=10,
-    description="Python API course",
-    estimated_time="2 weeks",
     preview_file_id=create_file_response.file.id,
     created_by_user_id=create_user_response.user.id
 )
@@ -58,9 +45,7 @@ print('Create course data:', create_course_response)
 
 #Обновляем курс
 update_course_request = UpdateCourseRequestSchema(
-    title="test1234",
-    description="test1234",
-    estimated_time="30min"
+    description=fake.text()
 )
 update_course_response = courses_client.update_course(
     create_course_response.course.id, 

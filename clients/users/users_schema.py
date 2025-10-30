@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
+from tools.fakers import fake
+
 
 class UserBaseSchema(BaseModel):
     """
@@ -39,7 +41,12 @@ class CreateUserRequestSchema(UserBaseSchema):
         populate_by_name=True
     )
 
-    password: str
+    password: str = Field(default_factory=fake.password)
+    
+    email: EmailStr = Field(default_factory=fake.email)
+    last_name: str = Field(alias='lastName', default_factory=fake.last_name)
+    first_name: str = Field(alias='firstName', default_factory=fake.first_name)
+    middle_name: str = Field(alias='middleName', default_factory=fake.middle_name)
 
 
 class CreateUserResponseSchema(BaseModel):
@@ -63,10 +70,10 @@ class UpdateUserRequestSchema(UserBaseSchema):
     """
     model_config = ConfigDict(populate_by_name=True)
 
-    email: EmailStr | None = Field(default=None)
-    last_name: str | None = Field(default=None, alias='lastName')
-    first_name: str | None = Field(default=None, alias='firstName')
-    middle_name: str | None = Field(default=None, alias='middleName')
+    email: EmailStr | None = Field(default_factory=fake.email)
+    last_name: str | None = Field(alias='lastName', default_factory=fake.last_name)
+    first_name: str | None = Field(alias='firstName', default_factory=fake.first_name)
+    middle_name: str | None = Field(alias='middleName', default_factory=fake.middle_name)
 
 
 class UpdateUserResponseSchema(BaseModel):

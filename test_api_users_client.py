@@ -28,7 +28,7 @@ from clients.exercises.exercises_schema import (
 )
 
 from tools.fakers import fake
-from tools import log_response, get_random_filename
+from tools import log_response
 
 # общий http‑клиент
 http_client = Client(base_url="http://127.0.0.1:8000")
@@ -36,22 +36,7 @@ http_client = Client(base_url="http://127.0.0.1:8000")
 # 1. Публичный клиент – создание пользователя
 public_client = PublicUsersClient(http_client)
 
-#payload_user_create: CreateUserRequestDict = {
-#    "email": fake.email(),
-#    "password": "string",
-#    "lastName": "Ivanov",
-#    "firstName": "Ivan",
-#    "middleName": "Ivanovich"
-#}
-
-payload_user_create = CreateUserRequestSchema(
-    email=fake.email(),
-    password="string",
-    last_name="Ivanov",
-    first_name="Ivan",
-    middle_name="Ivanovich"
-)
-
+payload_user_create = CreateUserRequestSchema()
 create_user_response = public_client.create_user_api(payload_user_create)
 log_response(create_user_response, "Create user")
 
@@ -81,12 +66,11 @@ log_response(user_get_response, "Get user_id data")
 
 payload_user_update = UpdateUserRequestSchema(
     email=fake.email(),
-    first_name="Alex",
-    middle_name="Smith"
+    last_name=None,
+    first_name=fake.first_name(),
+    middle_name=fake.middle_name()
 )
-print("\n\n\n", payload_user_update, "\n\n\n")
 user_update_response = private_client.update_user_api(user_me_data["user"]["id"], payload_user_update)
-print(user_update_response.request._content, "\n\n\n")
 log_response(user_update_response, "Update user_id data")
 
 
@@ -96,11 +80,7 @@ log_response(user_get_response, "Get user_id data")
 #4.1 Приватный клиент – запрос к /files
 file_client = FilesClient(http_client)
 
-file_payload = CreateFileRequestSchema(
-    filename=get_random_filename(),
-    directory="test123",
-    upload_file="./testdata/files/testfile.png"
-)
+file_payload = CreateFileRequestSchema()
 file_create_response = file_client.create_file_api(file_payload)
 file_create_data = file_create_response.json()
 log_response(file_create_response, "Create file")
@@ -112,13 +92,7 @@ log_response(file_get_response, "Get file")
 #4.2 Приватный клиент – запрос к /courses
 course_client = CoursesClient(http_client)
 
-
 course_payload = CreateCourseRequestSchema(
-    title="test123",
-    max_score=5,
-    min_score=1,
-    description="test123",
-    estimated_time="10min",
     preview_file_id=file_create_data["file"]["id"],
     created_by_user_id=user_me_data["user"]["id"]
 )
@@ -127,9 +101,11 @@ courses_create_data = courses_create_response.json()
 log_response(courses_create_response,  "Create course")
 
 course_update_payload = UpdateCourseRequestSchema(
-    title="test1234",
-    description="test1234",
-    estimated_time="30min"
+    title=fake.sentence(),
+    max_score=None,
+    min_score=None,
+    description=fake.text(),
+    estimated_time=fake.estimated_time()
 )
 course_update_response = course_client.update_course_api(
     courses_create_data["course"]["id"], 
@@ -157,7 +133,6 @@ create_exercise_payload = CreateExerciseRequestSchema(
     description="description 1",
     estimated_time="15min",
 )
-
 exercises_create_response = exercises_client.create_exercise_api(create_exercise_payload)
 exercises_create_data = exercises_create_response.json()
 log_response(exercises_create_response,  "Create exercise")
