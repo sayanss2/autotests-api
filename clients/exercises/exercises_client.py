@@ -70,7 +70,7 @@ class ExercisesClient(APIClient):
         
         return self.patch(
             f"/api/v1/exercises/{exercise_id}", 
-            json=request.model_dump(by_alias=True, exclude_unset=True))
+            json=request.model_dump(by_alias=True, exclude_unset=True, exclude_none=True))
 
     def delete_exercise_api(self, exercise_id: str) -> Response:
         """
