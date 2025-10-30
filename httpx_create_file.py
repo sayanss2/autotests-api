@@ -1,14 +1,14 @@
 import httpx
 
 from tools import log_response
-from tools import get_random_email
+from tools.fakers import fake
 
 SERVER = "http://127.0.0.1:8000"
 
 client = httpx.Client(base_url=SERVER)
 
 create_user_payload = {
-  "email": get_random_email(),
+  "email": fake.email(),
   "password": "string",
   "lastName": "string",
   "firstName": "string",

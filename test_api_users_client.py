@@ -27,7 +27,8 @@ from clients.exercises.exercises_schema import (
     UpdateExerciseRequestSchema
 )
 
-from tools import log_response, get_random_email, get_random_filename
+from tools.fakers import fake
+from tools import log_response, get_random_filename
 
 # общий http‑клиент
 http_client = Client(base_url="http://127.0.0.1:8000")
@@ -36,7 +37,7 @@ http_client = Client(base_url="http://127.0.0.1:8000")
 public_client = PublicUsersClient(http_client)
 
 #payload_user_create: CreateUserRequestDict = {
-#    "email": get_random_email(),
+#    "email": fake.email(),
 #    "password": "string",
 #    "lastName": "Ivanov",
 #    "firstName": "Ivan",
@@ -44,7 +45,7 @@ public_client = PublicUsersClient(http_client)
 #}
 
 payload_user_create = CreateUserRequestSchema(
-    email=get_random_email(),
+    email=fake.email(),
     password="string",
     last_name="Ivanov",
     first_name="Ivan",
@@ -79,7 +80,7 @@ user_get_response = private_client.get_user_api(user_me_data["user"]["id"])
 log_response(user_get_response, "Get user_id data")
 
 payload_user_update = UpdateUserRequestSchema(
-    email=get_random_email(),
+    email=fake.email(),
     first_name="Alex",
     middle_name="Smith"
 )

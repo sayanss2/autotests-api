@@ -1,7 +1,7 @@
 import httpx
 
 import json
-from tools import get_random_email
+from tools.fakers import fake
 
 # Функция для вывода ответа на печать
 def log_response(response, label="Response"):
@@ -25,7 +25,7 @@ client = httpx.Client()
 # 1. Создание пользователя
 user_create_endpoint = SERVER + "/api/v1/users"
 create_user_payload = {
-  "email": get_random_email(),
+  "email": fake.email(),
   "password": "string",
   "lastName": "string",
   "firstName": "string",
@@ -52,7 +52,7 @@ headers_credentials = {
         "Authorization": f'Bearer ' + user_login_data["token"]["accessToken"]
     }
 update_payload = {
-  "email": get_random_email(),
+  "email": fake.email(),
   "lastName": "string",
   "firstName": "string",
   "middleName": "string"

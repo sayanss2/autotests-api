@@ -1,7 +1,7 @@
 import httpx
 
 from tools import log_response
-from tools import get_random_email
+from tools.fakers import fake
 
 SERVER = "http://127.0.0.1:8000"
 
@@ -10,7 +10,7 @@ client = httpx.Client()
 user_create_endpoint = SERVER + "/api/v1/users"
 
 req_body = {
-  "email": get_random_email(),
+  "email": fake.email(),
   "password": "string",
   "lastName": "string",
   "firstName": "string",

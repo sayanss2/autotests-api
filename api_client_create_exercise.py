@@ -12,14 +12,14 @@ from clients.files.files_schema import CreateFileRequestSchema
 from clients.courses.courses_client import get_courses_client
 from clients.courses.courses_schema import CreateCourseRequestSchema
 
-from tools.fakers import get_random_email
+from tools.fakers import fake
 
 # Инициализируем клиенты
 public_users_client = get_public_users_client()
 
 # Создаем пользователя
 create_user_request = CreateUserRequestSchema(
-    email=get_random_email(),
+    email=fake.email(),
     password="string",
     last_name="string",
     first_name="string",
@@ -39,7 +39,7 @@ exercise_client = get_exercises_client(authentication_user)
 
 # Загружаем файл
 create_file_request = CreateFileRequestSchema(
-    filename=f"test_{get_random_email()}_image.png",
+    filename=f"test_{fake.email()}_image.png",
     directory="courses",
     upload_file="./testdata/files/image.png"
 )
