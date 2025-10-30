@@ -125,13 +125,7 @@ exercises_client = ExercisesClient(http_client)
 
 #5.1 Создание задания
 create_exercise_payload = CreateExerciseRequestSchema(
-    title="Test exercise 1",
-    course_id=courses_get_data["courses"][0]["id"],
-    max_score=10,
-    min_score=0,
-    order_index=1,
-    description="description 1",
-    estimated_time="15min",
+    course_id=courses_get_data["courses"][0]["id"]
 )
 exercises_create_response = exercises_client.create_exercise_api(create_exercise_payload)
 exercises_create_data = exercises_create_response.json()
@@ -152,8 +146,7 @@ log_response(exercise_get_response, "Get exercise")
 
 #5.4 Обновление задания
 update_exercise_payload = UpdateExerciseRequestSchema(
-    title= "Test exercise 123",
-    description= "description 123456"
+    description=fake.text()
 )
 
 exercise_update_response = exercises_client.update_exercise_api(
