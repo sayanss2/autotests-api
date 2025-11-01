@@ -15,6 +15,9 @@ from tools.assertions.authentication import assert_login_response
 
 
 def test_login():
+    """
+    Тест на аутентификацию пользователя.
+    """
     # Инициализируем клиент для публичных операций с пользователями
     public_users_client = get_public_users_client()
 
