@@ -25,7 +25,7 @@ def test_add_positive_case(a, b, expected):
 
 
 class TestUserAuthentication:
-    def test_login(self):
+    def test_not_login(self):
         assert 1 == 1
 
 
