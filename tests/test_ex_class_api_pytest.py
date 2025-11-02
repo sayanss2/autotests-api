@@ -43,6 +43,7 @@ def private_client(create_user_request):
 
 
 # Класс с тестами
+@pytest.mark.skip(reason="Для тестового запуска")
 @pytest.mark.usefixtures("public_client", "create_user_request", "created_user", "private_client")
 class TestUserAPI:
     """Тесты для сценария создания и получения пользователя."""

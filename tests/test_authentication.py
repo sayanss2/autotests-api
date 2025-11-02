@@ -15,6 +15,7 @@ from tools.assertions.schema import validate_json_schema
 from tools.assertions.base import assert_status_code
 from tools.assertions.authentication import assert_login_response
 
+
 @pytest.mark.regression
 @pytest.mark.authentication
 def test_login():

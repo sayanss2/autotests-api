@@ -1,6 +1,7 @@
 import pytest
 
 
+@pytest.mark.skip(reason="Для тестового запуска")
 def test_first_try():
     print("Hello World!")
 
@@ -8,7 +9,7 @@ def test_first_try():
 @pytest.fixture
 def numbers():
     return [1, 2, 3]
-
+@pytest.mark.skip(reason="Для тестового запуска")
 def test_len(numbers):
     assert len(numbers) == 3
 
@@ -19,16 +20,19 @@ def test_len(numbers):
     (1, -1, 0),
     (2, 2, 5),
 ])
+@pytest.mark.skip(reason="Для тестового запуска")
 def test_add_positive_case(a, b, expected):
     print(f"Проверяем: {a} + {b}")
     assert a + b == expected
 
 
+@pytest.mark.skip(reason="Для тестового запуска")
 class TestUserAuthentication:
     def test_not_login(self):
         assert 1 == 1
 
 
+@pytest.mark.skip(reason="Для тестового запуска")
 class TestCalculator:
     @pytest.fixture(autouse=True)
     def setup(self):

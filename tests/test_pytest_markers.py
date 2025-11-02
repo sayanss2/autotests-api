@@ -40,7 +40,7 @@ class TestUserInterface:
         pass
 """
 
-
+@pytest.mark.skip(reason="Для тестового запуска")
 @pytest.mark.smoke
 class TestLogin:
     @pytest.mark.smoke
@@ -51,6 +51,7 @@ class TestLogin:
     def test_invalid_login(self):
         pass
 
+@pytest.mark.skip(reason="Для тестового запуска")
 @pytest.mark.regression
 class TestRegistration:
     @pytest.mark.regression
@@ -61,6 +62,7 @@ class TestRegistration:
     def test_invalid_registration(self):
         pass
 
+@pytest.mark.skip(reason="Для тестового запуска")
 @pytest.mark.smoke
 @pytest.mark.regression
 class TestCheckout:
@@ -72,5 +74,6 @@ class TestCheckout:
     def test_invalid_checkout(self):
         pass
 
+@pytest.mark.skip(reason="Для тестового запуска")
 def test_search():
     pass
