@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import pytest  # Импортируем библиотеку pytest
 
-from clients.users.public_users_client import get_public_users_client
+from clients.users.public_users_client import PublicUsersClient
 from clients.users.users_schema import (
     CreateUserRequestSchema,
     CreateUserResponseSchema
@@ -15,9 +15,11 @@ from tools.assertions.users import assert_create_user_response
 
 @pytest.mark.users  # Добавили маркировку users
 @pytest.mark.regression  # Добавили маркировку regression
-def test_create_user():
+def test_create_user(
+    public_users_client: PublicUsersClient
+):
     # Инициализируем API-клиент для работы с пользователями
-    public_users_client = get_public_users_client()
+    # public_users_client = get_public_users_client() #убрали в фикстуру public_users_client
 
     # Формируем тело запроса на создание пользователя
     request = CreateUserRequestSchema()
@@ -30,18 +32,7 @@ def test_create_user():
     response_data = CreateUserResponseSchema.model_validate_json(response.text)
 
     # Проверяем статус-код ответа
-    #assert response.status_code == HTTPStatus.OK, 'Некорректный статус-код ответа'
     assert_status_code(response.status_code, HTTPStatus.OK)
-
-    # Проверяем, что данные ответа совпадают с данными запроса
-    #assert response_data.user.email == request.email, 'Некорректный email пользователя'
-    #assert_equal(response_data.user.email, request.email, "email")
-    #assert response_data.user.last_name == request.last_name, 'Некорректный last_name пользователя'
-    #assert_equal(response_data.user.last_name, request.last_name, "last_name")
-    #assert response_data.user.first_name == request.first_name, 'Некорректный first_name пользователя'
-    #assert_equal(response_data.user.first_name, request.first_name,  "first_name")
-    #assert response_data.user.middle_name == request.middle_name, 'Некорректный middle_name пользователя'
-    #assert_equal(response_data.user.middle_name, request.middle_name,  "middle_name")#
 
     # Используем функцию для проверки ответа создания юзера
     assert_create_user_response(request=request, response=response_data)
