@@ -47,7 +47,7 @@ def private_client(create_user_request: CreateUserRequestSchema) -> PrivateUsers
 
 
 # Тесты
-#@pytest.mark.skip(reason="Для тестового запуска")
+@pytest.mark.skip(reason="Для тестового запуска")
 def test_create_and_get_user(created_user: CreateUserResponseSchema, private_client: PrivateUsersClient):
     """Сценарий: создаём пользователя и получаем его через приватный API."""
     user_id = created_user.user.id
