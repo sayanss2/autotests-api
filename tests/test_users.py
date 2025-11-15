@@ -3,14 +3,17 @@ from http import HTTPStatus
 
 import pytest  # Импортируем библиотеку pytest
 
+from clients.users.private_users_client import PrivateUsersClient
 from clients.users.public_users_client import PublicUsersClient
 from clients.users.users_schema import (
     CreateUserRequestSchema,
-    CreateUserResponseSchema
+    CreateUserResponseSchema,
+    GetUserResponseSchema
 )
+from tests.conftest import UserFixture
 from tools.assertions.schema import validate_json_schema
 from tools.assertions.base import assert_status_code
-from tools.assertions.users import assert_create_user_response
+from tools.assertions.users import assert_create_user_response, assert_get_user_response
 
 
 @pytest.mark.users  # Добавили маркировку users
@@ -38,3 +41,28 @@ def test_create_user(
     assert_create_user_response(request=request, response=response_data)
 
     validate_json_schema(instance=response.json(), schema=response_data.model_json_schema())
+
+
+@pytest.mark.users
+@pytest.mark.regression
+def test_get_user_me(
+    function_user: UserFixture,
+    private_users_client: PrivateUsersClient
+):
+    """
+    Тест на получение текущего пользователя через /api/v1/users/me.
+    """
+    # Отправляем GET‑запрос
+    response = private_users_client.get_user_me_api()
+
+    # Проверяем статус‑код
+    assert_status_code(response.status_code, HTTPStatus.OK)
+
+    # Преобразуем тело ответа в схему
+    get_user_response = GetUserResponseSchema.model_validate_json(response.text)
+
+    # Проверяем корректность данных
+    assert_get_user_response(get_user_response, function_user.response)
+
+    # Валидируем JSON‑схему
+    validate_json_schema(instance=response.json(), schema=get_user_response.model_json_schema())
