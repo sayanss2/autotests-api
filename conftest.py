@@ -1,0 +1,5 @@
+# conftest.py
+pytest_plugins = (
+    "fixtures.users",
+    "fixtures.authentication",
+)

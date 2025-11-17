@@ -10,7 +10,10 @@ from clients.users.users_schema import (
     CreateUserResponseSchema,
     GetUserResponseSchema
 )
-from tests.conftest import UserFixture
+
+#from tests.conftest import UserFixture
+from fixtures.users import UserFixture
+
 from tools.assertions.schema import validate_json_schema
 from tools.assertions.base import assert_status_code
 from tools.assertions.users import assert_create_user_response, assert_get_user_response
