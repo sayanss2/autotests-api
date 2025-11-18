@@ -1,7 +1,7 @@
 #tests/test_users.py
 from http import HTTPStatus
 
-import pytest  # Импортируем библиотеку pytest
+import pytest
 
 from clients.users.private_users_client import PrivateUsersClient
 from clients.users.public_users_client import PublicUsersClient
@@ -11,7 +11,6 @@ from clients.users.users_schema import (
     GetUserResponseSchema
 )
 
-#from tests.conftest import UserFixture
 from fixtures.users import UserFixture
 
 from tools.assertions.schema import validate_json_schema
@@ -21,8 +20,8 @@ from tools.assertions.users import assert_create_user_response, assert_get_user_
 from tools.fakers import fake
 
 
-@pytest.mark.users  # Добавили маркировку users
-@pytest.mark.regression  # Добавили маркировку regression
+@pytest.mark.users
+@pytest.mark.regression
 @pytest.mark.parametrize(
     "domain",
     ["mail.ru", "gmail.com", "example.com"]
