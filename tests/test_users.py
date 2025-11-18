@@ -18,17 +18,27 @@ from tools.assertions.schema import validate_json_schema
 from tools.assertions.base import assert_status_code
 from tools.assertions.users import assert_create_user_response, assert_get_user_response
 
+from tools.fakers import fake
+
 
 @pytest.mark.users  # Добавили маркировку users
 @pytest.mark.regression  # Добавили маркировку regression
+@pytest.mark.parametrize(
+    "domain",
+    ["mail.ru", "gmail.com", "example.com"]
+)
 def test_create_user(
+    domain: str,
     public_users_client: PublicUsersClient
 ):
-    # Инициализируем API-клиент для работы с пользователями
-    # public_users_client = get_public_users_client() #убрали в фикстуру public_users_client
+    """
+    Тест на создание пользователя с разными доменами email.
+    """
 
     # Формируем тело запроса на создание пользователя
-    request = CreateUserRequestSchema()
+    request = CreateUserRequestSchema(
+        email=fake.email(domain=domain)
+    )
 
     # Отправляем запрос на создание пользователя
     response = public_users_client.create_user_api(request)
