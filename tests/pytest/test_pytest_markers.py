@@ -47,14 +47,14 @@ class TestLogin:
     def test_valid_login(self):
         pass
 
-    @pytest.mark.regression
+    #@pytest.mark.regression
     def test_invalid_login(self):
         pass
 
 @pytest.mark.skip(reason="Для тестового запуска")
-@pytest.mark.regression
+#@pytest.mark.regression
 class TestRegistration:
-    @pytest.mark.regression
+    #@pytest.mark.regression
     def test_valid_registration(self):
         pass
 
@@ -64,10 +64,10 @@ class TestRegistration:
 
 @pytest.mark.skip(reason="Для тестового запуска")
 @pytest.mark.smoke
-@pytest.mark.regression
+#@pytest.mark.regression
 class TestCheckout:
     @pytest.mark.smoke
-    @pytest.mark.regression
+    #@pytest.mark.regression
     def test_valid_checkout(self):
         pass
 

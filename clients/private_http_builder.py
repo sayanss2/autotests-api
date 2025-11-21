@@ -7,14 +7,16 @@ from clients.authentication.authentication_schema import LoginRequestSchema
 
 # Импортируем общий кэш
 from clients.public_http_builder import _http_clients_cache
+#from functools import lru_cache #Альтернатива _http_clients_cache
 
 
 # Добавили суффикс Schema вместо Dict
-class AuthenticationUserSchema(BaseModel):  # Структура данных пользователя для авторизации
+class AuthenticationUserSchema(BaseModel, frozen=True):  # Структура данных пользователя для авторизации
     email: EmailStr
     password: str
 
 
+# @lru_cache(maxsize=None)  # Кешируем возвращаемое значение. Альтернатива _http_clients_cache
 def get_private_http_client(user: AuthenticationUserSchema) -> Client:
     """
     Функция создаёт экземпляр httpx.Client с аутентификацией пользователя.
