@@ -29,11 +29,11 @@ class APIClient:
         return self.client.get(url, params=params)
     
     def post(
-            self,
-            url: URL | str,
-            json: Any | None = None,
-            data: RequestData | None = None,
-            files: RequestFiles | None = None
+             self,
+             url: URL | str,
+             json: Any | None = None,
+             data: RequestData | None = None,
+             files: RequestFiles | None = None
     ) -> Response:
         """
         Выполняет POST-запрос.
@@ -47,9 +47,9 @@ class APIClient:
         return self.client.post(url, json=json, data=data, files=files)
     
     def patch(
-            self,
-            url: URL | str,
-            json: Any | None = None
+              self,
+              url: URL | str,
+              json: Any | None = None
     ) -> Response:
         """
         Выполняет PATCH-запрос (частичное обновление данных).
@@ -61,8 +61,8 @@ class APIClient:
         return self.client.patch(url, json=json)    
     
     def delete(
-            self,
-            url: URL | str
+               self,
+               url: URL | str
     ) -> Response:
         """
         Выполняет DELETE-запрос (удаление данных).
@@ -71,3 +71,18 @@ class APIClient:
         :return: Объект Response с данными ответа.
         """
         return self.client.delete(url)
+
+    def options(
+                self,
+                url: URL | str,
+                params: QueryParams | None = None
+    ) -> Response:
+            """
+            Выполняет HTTP‑OPTIONS запрос к указанному URL.
+            Параметры:
+                url (URL | str) – адрес ресурса.
+                params (QueryParams | None) – словарь GET‑параметров.
+            Возвращает:
+                Response – объект ответа, содержащий заголовки и статус.
+            """
+            return self.client.options(url, params=params)
