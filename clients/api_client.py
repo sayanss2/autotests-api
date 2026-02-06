@@ -86,3 +86,17 @@ class APIClient:
                 Response – объект ответа, содержащий заголовки и статус.
             """
             return self.client.options(url, params=params)
+    
+    def head(
+              self,
+              url: URL | str,
+              params: QueryParams | None = None
+    ) -> Response:
+            """
+            Выполняет HEAD-запрос (получение заголовков ресурса).
+
+            :param url: URL-адрес эндпоинта.
+            :param params: GET‑параметры запроса (необязательны).
+            :return: Объект Response с заголовками ответа.
+            """
+            return self.client.head(url, params=params)
